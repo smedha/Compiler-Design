@@ -1,0 +1,103 @@
+package compiler.design;
+
+import java.util.*;
+class countNumOfTokens
+{
+    public static String str="";
+    public static void enterDetails()
+    {
+        Scanner sc=new Scanner(System.in);
+        System.out.println("Enter the code line by line \n Enter ? to exit ");
+        String s=sc.next();
+        while(s.equals("?")==false)
+        {
+            s+="\n";
+            str+=s;
+            s=sc.next();
+        }
+    }
+    
+    public static int nextDelimiter(int i)
+    {
+        for(int j=i+1;j<str.length();j++)
+        {
+            if(isSeperatorOrOperator(str.charAt(j))==true || Character.isWhitespace(str.charAt(j))==true)
+                return j;
+        }
+        return -999;
+    }
+    public static boolean isSeperatorOrOperator(char ch)
+    {
+        return ch=='[' ||
+                ch=='+' || ch=='-' || ch=='=' || ch=='*' || ch=='/' || ch=='%' || ch=='^'
+                ||ch=='>' ||ch=='<' || ch=='$' || ch==','|| ch==';' || ch=='(' || ch==')' 
+                || ch==']' || ch=='}' || ch=='{' || ch=='.' || ch=='!' || ch=='@' || ch=='#'|| ch==':' || ch=='~' || ch=='`' ;
+    }
+    public static void countTokens()
+    {
+        int c=0,j;
+        str=str.trim();
+        //System.out.println(str);
+        int n=str.length();
+        for(int i=0;i<n;i++)
+        {
+            char ch=str.charAt(i);
+            if((str.substring(i,n)).startsWith("//") ==true)
+            {
+                i=str.indexOf("\n",i);
+            }
+            else if((str.substring(i,n)).startsWith("/*") ==true)
+            {
+                i=str.indexOf("*/",i+2);
+                if(i==(n-2))
+                    break;
+            }
+            else if(str.startsWith("\"",i))
+            {
+                j=str.indexOf("\"",i+2);
+                if(j>=0)
+                {
+                    i=j;
+                    c++;
+                }
+                else
+                {
+                    System.out.println("Error");
+                    return;
+                }
+            }
+            else if(str.startsWith("++",i) ||str.startsWith("-+",i) ||str.startsWith("+-",i) ||
+                    str.startsWith("--",i) ||str.startsWith("+=",i) ||str.startsWith("-+",i) ||
+                    str.startsWith("/=",i) ||str.startsWith("*=",i) ||str.startsWith("&&",i) ||
+                    str.startsWith("||",i) ||str.startsWith("+/",i) ||str.startsWith("+/",i) 
+                    ||str.startsWith("==",i))
+            {
+                i=i+1;
+                c++;
+            }
+            else if(isSeperatorOrOperator(ch) == true)
+            {
+                c++;
+            } 
+            else if(Character.isLetterOrDigit(ch)==true)
+            {
+                j=nextDelimiter(i);
+                if(j==(i+1) || j==-999)
+                {
+                    c++;
+                }
+                else
+                {
+                    i=j-2;
+                }
+            }
+            
+        } 
+        System.out.println(c);
+    }
+    public static void main(String[] args)
+    {
+        enterDetails();
+        countTokens();
+    }
+}
